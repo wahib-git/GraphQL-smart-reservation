@@ -1,21 +1,27 @@
-const userResolvers = require('./userResolvers');
-const spaceResolvers = require('./spaceResolvers');
-const reservationResolvers = require('./reservationResolvers');
-const { GraphQLScalarType, Kind } = require('graphql');
+const userResolvers = require("./userResolvers");
+const spaceResolvers = require("./spaceResolvers");
+const reservationResolvers = require("./reservationResolvers");
+const { GraphQLScalarType, Kind } = require("graphql");
 
 // Custom scalar for Date
 const dateScalar = new GraphQLScalarType({
-  name: 'Date',
-  description: 'Date custom scalar type',
+  name: "Date",
+  description: "Date custom scalar type",
   serialize(value) {
-    return value.getTime(); // Convert Date to timestamp
+    return value instanceof Date ? value.toISOString() : null;
   },
   parseValue(value) {
-    return new Date(value); // Convert timestamp to Date
+    // Accepte timestamp ou string ISO
+    if (typeof value === "string" || typeof value === "number") {
+      const date = new Date(value);
+      return isNaN(date) ? null : date;
+    }
+    return null;
   },
   parseLiteral(ast) {
-    if (ast.kind === Kind.INT) {
-      return new Date(parseInt(ast.value, 10)); // Convert AST value to Date
+    if (ast.kind === Kind.STRING || ast.kind === Kind.INT) {
+      const date = new Date(ast.value);
+      return isNaN(date) ? null : date;
     }
     return null;
   },
@@ -30,14 +36,14 @@ const resolvers = {
   },
   Mutation: {
     ...userResolvers.Mutation,
-    ...spaceResolvers.Mutation, 
+    ...spaceResolvers.Mutation,
     ...reservationResolvers.Mutation,
   },
   // Add any field resolvers if needed
   Reservation: {
     user: reservationResolvers.Reservation.user,
     space: reservationResolvers.Reservation.space,
-  }
+  },
 };
 
 module.exports = resolvers;
