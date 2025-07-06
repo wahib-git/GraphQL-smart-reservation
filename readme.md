@@ -63,13 +63,109 @@ project/
 │   ├── resolvers/        # Logique de résolution GraphQL
 │   ├── services/         # Logique métier
 │   ├── utils/            # Fonctions utilitaires
-│   └── index.js          # Point d'entrée
+│   └── server.js         # Point d'entrée
 ├── tests/                # Tests unitaires et d'intégration
 ├── .env                  # Variables d'environnement
 └── README.md             # Documentation
 ```
 
+## Utilisation de l'API
 
+### Exemples de requêtes GraphQL
+
+#### Inscription d'un utilisateur
+
+```graphql
+mutation {
+  register(
+    input: {
+      name: "wahib"
+      email: "wahib@example.com"
+      password: "password123"
+    }
+  ) {
+    token
+    user {
+      id
+      name
+      email
+      role
+    }
+  }
+}
+```
+
+#### Connexion
+
+```graphql
+mutation {
+  login(input: { email: "wahib@example.com", password: "password123" }) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+```
+
+#### Création d'un espace (admin uniquement)
+
+```graphql
+mutation {
+  createSpace(
+    input: {
+      name: "Salle de réunion A"
+      type: "meeting_room"
+      capacity: 8
+      amenities: ["Projecteur", "Tableau blanc", "Visioconférence"]
+      hourlyRate: 25.5
+      description: "Salle idéale pour les réunions d'équipe"
+    }
+  ) {
+    id
+    name
+    type
+    capacity
+    hourlyRate
+  }
+}
+```
+
+#### Vérifier la disponibilité d'un espace
+
+```graphql
+query {
+  checkSpaceAvailability(
+    spaceId: "60d21b4667d0d8992e610c85"
+    startTime: "2025-05-20T14:00:00Z"
+    endTime: "2025-05-20T16:00:00Z"
+  )
+}
+```
+
+#### Réserver un espace
+
+```graphql
+mutation {
+  createReservation(
+    input: {
+      spaceId: "60d21b4667d0d8992e610c85"
+      startTime: "2025-05-20T14:00:00Z"
+      endTime: "2025-05-20T16:00:00Z"
+    }
+  ) {
+    id
+    space {
+      name
+    }
+    startTime
+    endTime
+    status
+  }
+}
+```
 
 ## Sécurité et Authentification
 

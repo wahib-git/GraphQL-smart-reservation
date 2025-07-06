@@ -179,7 +179,7 @@ module.exports = {
           space: spaceId,
           startTime: new Date(startTime),
           endTime: new Date(endTime),
-          status: "confirmed", // Auto-confirmation
+          status: "pending", // Auto-confirmation
         });
 
         await reservation.save();

@@ -38,8 +38,6 @@ const PORT = process.env.PORT || 4000;
 
 server.listen(PORT).then(({ url }) => {
   console.log(`
-     Serveur prêt à l'adresse ${url}
-     GraphQL Playground disponible à ${url}graphql
      Documentation de l'API disponible à ${url}graphql-docs
   `);
 });
